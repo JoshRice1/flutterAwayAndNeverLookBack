@@ -1,0 +1,8 @@
+{
+    "presentationTitle": "Flutter Away and Never Look Back!",
+    "@presentationTitle": {
+      "description": "The title of this app and presentation."
+    },
+    "appTitle": "Flutter Away!"
+
+}

@@ -1,90 +1,87 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_away_and_never_look_back/theme.dart';
+import 'dart:convert';
 
-void main() {
-  runApp(MyApp());
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_away_and_never_look_back/ui/titlePage.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:json_theme/json_theme.dart';
+
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final lightThemeStr = await rootBundle.loadString('assets/lightTheme.json');
+  final lightThemeJson = jsonDecode(lightThemeStr);
+  final lightTheme = ThemeDecoder.decodeThemeData(lightThemeJson) ?? ThemeData();
+
+  final darkThemeStr = await rootBundle.loadString('assets/darkTheme.json');
+  final darkThemeJson = jsonDecode(darkThemeStr);
+  final darkTheme = ThemeDecoder.decodeThemeData(darkThemeJson) ?? ThemeData();
+
+  runApp(MyApp(lightTheme: lightTheme, darkTheme: darkTheme,));
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key, required this.lightTheme, required this.darkTheme}) : super(key: key);
+  final ThemeData lightTheme;
+  final ThemeData darkTheme;
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Away',
-      theme: theme(),
-      home: MyHomePage(title: 'Flutter Away'),
+      title: "Flutter Away!",
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en', ''),
+        Locale('es', '')   
+      ],
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      home: const MyHomePage(title: 'Flutter Away and Never Look Back'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
+
+  // This widget is the home page of your application. It is stateful, meaning
+  // that it has a State object (defined below) that contains fields that affect
+  // how it looks.
+
+  // This class is the configuration for the state. It holds the values (in this
+  // case the title) provided by the parent (in this case the App widget) and
+  // used by the build method of the State. Fields in a Widget subclass are
+  // always marked "final".
+
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
+  
   @override
   Widget build(BuildContext context) {
+   
     return Scaffold(
+      
       appBar: AppBar(
+       
         title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            MyWidget(),
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ),
-    );
-  }
-}
-
-class MyWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Icon(Icons.account_circle, size: 50),
-        ),
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Flutter McFlutter',
-              style: Theme.of(context).textTheme.headline5,
-            ),
-            Text('Experienced App Developer'),
-          ],
-        ),
-      ],
+      ),      
+      body: const Center(
+       
+        child: TitlePage(),
+      )
+       
     );
   }
 }
