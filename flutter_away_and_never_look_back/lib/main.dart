@@ -1,30 +1,17 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_away_and_never_look_back/ui/titlePage.dart';
+import 'package:flutter_away_and_never_look_back/slides/title_page.dart';
+import 'package:flutter_away_and_never_look_back/slides/who_am_i.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:json_theme/json_theme.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final lightThemeStr = await rootBundle.loadString('assets/lightTheme.json');
-  final lightThemeJson = jsonDecode(lightThemeStr);
-  final lightTheme = ThemeDecoder.decodeThemeData(lightThemeJson) ?? ThemeData();
 
-  final darkThemeStr = await rootBundle.loadString('assets/darkTheme.json');
-  final darkThemeJson = jsonDecode(darkThemeStr);
-  final darkTheme = ThemeDecoder.decodeThemeData(darkThemeJson) ?? ThemeData();
-
-  runApp(MyApp(lightTheme: lightTheme, darkTheme: darkTheme,));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key, required this.lightTheme, required this.darkTheme}) : super(key: key);
-  final ThemeData lightTheme;
-  final ThemeData darkTheme;
+  const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
@@ -41,15 +28,15 @@ class MyApp extends StatelessWidget {
         Locale('en', ''),
         Locale('es', '')   
       ],
-      theme: lightTheme,
-      darkTheme: darkTheme,
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
       home: const MyHomePage(title: 'Flutter Away and Never Look Back'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({super.key, required this.title});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -67,21 +54,54 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+    int slideCounter = 0;
+    late List<Widget> pages;
+  @override
+  void initState() {
+    pages = [
+      TitlePage(endOfPageCallback: moveForward, begingingOfPageCallback: moveBackward),
+      WhoAmIPage(endOfPageCallback: moveForward, begingingOfPageCallback: moveBackward)
+      ];
+    super.initState();
+  }
   
   @override
   Widget build(BuildContext context) {
-   
+
+
     return Scaffold(
       
       appBar: AppBar(
        
         title: Text(widget.title),
       ),      
-      body: const Center(
-       
-        child: TitlePage(),
+      body: Center(
+        child: _getPage(),
       )
-       
     );
   }
+ Widget _getPage(){
+    if(slideCounter >= pages.length){
+      slideCounter = pages.length;
+    }
+    return pages[slideCounter];
+  }
+
+  moveForward(){
+    if(slideCounter < pages.length - 1){
+      setState(() {
+        slideCounter ++;
+      });
+    }
+  }
+
+  moveBackward(){
+    if(slideCounter > 0){
+      setState(() {
+        slideCounter --;
+      });
+    }
+  }
+ 
+
 }

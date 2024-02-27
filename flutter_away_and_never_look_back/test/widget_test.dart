@@ -12,6 +12,7 @@ import 'package:flutter_away_and_never_look_back/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
 
