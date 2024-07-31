@@ -12,5 +12,12 @@ ThemeData theme() {
     // Notice that the counter didn't reset back to zero; the application
     // is not restarted.
     primarySwatch: Colors.blue,
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: Colors.blue,
+        shape: CircleBorder(),
+        foregroundColor: Colors.white),
+    appBarTheme: AppBarTheme(
+      backgroundColor: Colors.blue,
+    ),
   );
 }
